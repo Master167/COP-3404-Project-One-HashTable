@@ -35,10 +35,11 @@ class HashArray {
     
     private DataItem[] data;
     private int size;
+    private DataItem deletedRecord;
     
     public HashArray(String fileName) {
         this.size = 1024;
-        
+        this.deletedRecord = new DataItem(" ", 0);
         try {
             File file = new File(fileName);
             this.data = createArray(file);
@@ -59,12 +60,11 @@ class HashArray {
                 String[] string = fileReader.nextLine().split(" ");
                 if (string.length == 2) {
                     tempData = new DataItem(string[0], Integer.parseInt(string[1]));
+                    insertData(tempData);
                 }
                 else {
-                    tempData = new DataItem(string[0]);
+                    searchForData(string[0]);
                 }
-                
-                temp[hashFunction(tempData.getLabel(), this.size)] = tempData;
             }
         }
         catch (FileNotFoundException ex) {
@@ -86,39 +86,33 @@ class HashArray {
         System.out.printf("%d was calculated%n", value);
         return value;
     }
-}
-
-class ArrayIterator {
-    private int currentIndex;
-    private int lastIndex;
     
-    private DataItem[] data;
-    
-    public ArrayIterator(DataItem[] array) {
-        this.data = array;
-        this.currentIndex = 0;
-        this.lastIndex = array.length;
+    private void insertData(DataItem item) {
+        int insertionIndex = this.hashFunction(item.getLabel(), this.size);
+        boolean emptyArea = false;
+        // Check for Collisions
+        while (!emptyArea) {
+            if (this.data[insertionIndex] != null) {
+                emptyArea = true;
+            }
+            else {
+                // Going to next cell
+                System.out.printf("COLLISION ON INSERT%n");
+                insertionIndex = (insertionIndex * insertionIndex) % this.size;
+            }
+        }
+        this.data[insertionIndex] = item;
+        System.out.printf("Inserting %s with value: %d at %d %n", item.getLabel(), item.getValue(), insertionIndex);
     }
     
-    public ArrayIterator(DataItem[] array, int start) {
-        this.data = array;
-        this.currentIndex = start;
-        this.lastIndex = array.length;
+    private void searchForData(String key) {
+        System.out.printf("Seraching for %s%n", key);
     }
     
-    public DataItem getNext() {
-        DataItem item;
-        if (currentIndex + 1 != lastIndex) {
-            item = data[++currentIndex];
-        }
-        else {
-            item = data[0];
-            currentIndex = 0;
-        }
+    private void writeToFile(String message) {
         
-        return item;
     }
-}
+}//end Class HashTable
 
 class DataItem {
     private String label;
@@ -129,11 +123,6 @@ class DataItem {
         this.value = value;
     }
     
-    public DataItem(String label) {
-        this.label = label;
-        this.value = this.calculateValue(label);
-    }
-    
     public int getValue() {
         return this.value;
     }
@@ -141,14 +130,4 @@ class DataItem {
     public String getLabel() {
         return this.label;
     }
-    
-    private int calculateValue(String str) {
-        int number = 0;
-        
-        for(char a : str.toCharArray()) {
-            number += (int) a;
-        }
-        
-        return number;
-    }
-}
+}// end Class DataItem
