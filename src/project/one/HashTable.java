@@ -87,6 +87,10 @@ class HashArray {
         return value;
     }
     
+    private int collisionResolver(int index, int collisions) {
+        return ((index * index) + collisions) % this.size;
+    }
+    
     private void insertData(DataItem item) {
         int insertionIndex = this.hashFunction(item.getLabel(), this.size);
         int collisions = 0;
@@ -105,14 +109,31 @@ class HashArray {
             else {
                 // Going to next cell
                 collisions++;
-                insertionIndex = ((insertionIndex * insertionIndex) + collisions) % this.size;
+                insertionIndex = this.collisionResolver(insertionIndex, collisions);
             }
         }
         
     }
     
     private void searchForData(String key) {
-        System.out.printf("Seraching for %s%n", key);
+        int insertionIndex = this.hashFunction(key, this.size);
+        int jumps = 0;
+        boolean searching = true;
+        
+        while (searching) {
+            if (this.data[insertionIndex] == null || this.data[insertionIndex].equals(deletedRecord)) {
+                System.out.printf("ERROR: '%s' not found%n", key);
+                searching = false;
+            }
+            else if (this.data[insertionIndex].getLabel().equals(key)) {
+                System.out.printf("'%s' with value: %d found at index: %d %n", key, this.data[insertionIndex].getValue(), insertionIndex);
+                searching = false;
+            }
+            else {
+                jumps++;
+                insertionIndex = this.collisionResolver(insertionIndex, jumps);
+            }
+        }
     }
     
     private void writeToFile(String message) {
