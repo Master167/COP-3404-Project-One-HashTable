@@ -1,9 +1,7 @@
 package project.one;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.StringTokenizer;
 
 /**
  * COP 3404 Project One - Create a Symbol table that reads a file and fills the 
@@ -25,6 +23,7 @@ public class HashTable {
         }
         catch (Exception e) {
             System.out.printf(e.toString());
+            e.printStackTrace();
         }
         return;
     }
@@ -38,7 +37,7 @@ class HashArray {
     private DataItem deletedRecord;
     
     public HashArray(String fileName) {
-        this.size = 1024;
+        this.size = 100;
         this.deletedRecord = new DataItem(" ", 0);
         try {
             File file = new File(fileName);
@@ -46,11 +45,12 @@ class HashArray {
         }
         catch (Exception e) {
             System.out.printf(e.toString());
+            e.printStackTrace();
         }
     }
     
     private DataItem[] createArray(File file) {
-        DataItem[] temp = new DataItem[this.size];
+        this.data = new DataItem[this.size];
 
         try {
             Scanner fileReader = new Scanner(file);
@@ -71,7 +71,7 @@ class HashArray {
             System.out.printf(file.getName() + " was not found.%n");
         }
       
-        return temp;
+        return data;
     }
     
     private int hashFunction(String str, int maxSize) {
@@ -83,26 +83,32 @@ class HashArray {
             temp = charArray[i];
             value = (value * 26 + temp) % maxSize;
         }
-        System.out.printf("%d was calculated%n", value);
+        value = value;
         return value;
     }
     
     private void insertData(DataItem item) {
         int insertionIndex = this.hashFunction(item.getLabel(), this.size);
-        boolean emptyArea = false;
-        // Check for Collisions
-        while (!emptyArea) {
-            if (this.data[insertionIndex] != null) {
-                emptyArea = true;
+        int collisions = 0;
+        boolean searching = true;
+        
+        while (searching) {
+            if (this.data[insertionIndex] == null) {
+                this.data[insertionIndex] = item;
+                System.out.printf("Inserting '%s' with value: %d at index: %d with %d collisions %n", item.getLabel(), item.getValue(), insertionIndex, collisions);
+                searching = false;
+            }
+            else if (item.equals(this.data[insertionIndex])) {
+                System.out.printf("ERROR: '%s' already exists at index %d %n", item.getLabel(), insertionIndex);
+                searching = false;
             }
             else {
                 // Going to next cell
-                System.out.printf("COLLISION ON INSERT%n");
-                insertionIndex = (insertionIndex * insertionIndex) % this.size;
+                collisions++;
+                insertionIndex = ((insertionIndex * insertionIndex) + collisions) % this.size;
             }
         }
-        this.data[insertionIndex] = item;
-        System.out.printf("Inserting %s with value: %d at %d %n", item.getLabel(), item.getValue(), insertionIndex);
+        
     }
     
     private void searchForData(String key) {
@@ -129,5 +135,21 @@ class DataItem {
     
     public String getLabel() {
         return this.label;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof DataItem) {
+            DataItem x = (DataItem) o;
+            if (x.getLabel().equals(this.label)){
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
     }
 }// end Class DataItem
