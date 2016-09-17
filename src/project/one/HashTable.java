@@ -1,6 +1,10 @@
 package project.one;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 /**
@@ -25,7 +29,6 @@ public class HashTable {
             System.out.printf(e.toString());
             e.printStackTrace();
         }
-        return;
     }
     
 }
@@ -35,10 +38,13 @@ class HashArray {
     private DataItem[] data;
     private int size;
     private DataItem deletedRecord;
+    private String outputFilename;
     
     public HashArray(String fileName) {
         this.size = 100;
         this.deletedRecord = new DataItem(" ", 0);
+        this.outputFilename = "output.txt";
+
         try {
             File file = new File(fileName);
             this.data = createArray(file);
@@ -83,7 +89,6 @@ class HashArray {
             temp = charArray[i];
             value = (value * 26 + temp) % maxSize;
         }
-        value = value;
         return value;
     }
     
@@ -99,11 +104,11 @@ class HashArray {
         while (searching) {
             if (this.data[insertionIndex] == null) {
                 this.data[insertionIndex] = item;
-                System.out.printf("Inserting '%s' with value: %d at index: %d with %d collisions %n", item.getLabel(), item.getValue(), insertionIndex, collisions);
+                writeToFile("Inserting '" + item.getLabel() + "' with value: " + item.getValue() + " at index: " + insertionIndex + " with " + collisions + "\n");
                 searching = false;
             }
             else if (item.equals(this.data[insertionIndex])) {
-                System.out.printf("ERROR: '%s' already exists at index %d %n", item.getLabel(), insertionIndex);
+                writeToFile("ERROR: '" + item.getLabel() + "' already exists at index: " + insertionIndex + "\n");
                 searching = false;
             }
             else {
@@ -122,11 +127,11 @@ class HashArray {
         
         while (searching) {
             if (this.data[insertionIndex] == null || this.data[insertionIndex].equals(deletedRecord)) {
-                System.out.printf("ERROR: '%s' not found%n", key);
+                writeToFile("ERROR: '" + key + "' not found\n");
                 searching = false;
             }
             else if (this.data[insertionIndex].getLabel().equals(key)) {
-                System.out.printf("'%s' with value: %d found at index: %d %n", key, this.data[insertionIndex].getValue(), insertionIndex);
+                writeToFile("'" + key + "' with value: " + this.data[insertionIndex].getValue() + " found at index: " + insertionIndex + "\n");
                 searching = false;
             }
             else {
@@ -137,7 +142,18 @@ class HashArray {
     }
     
     private void writeToFile(String message) {
-        
+        try (
+                FileWriter fileWriter = new FileWriter(this.outputFilename, true);
+                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                PrintWriter outputWriter = new PrintWriter(bufferedWriter);
+            ) {
+            outputWriter.printf(message);
+            System.out.printf(message);
+        }
+        catch (IOException ex) {
+            System.out.printf("%s%n", ex.getMessage());
+            ex.getStackTrace();
+        }
     }
 }//end Class HashTable
 
@@ -162,12 +178,7 @@ class DataItem {
     public boolean equals(Object o) {
         if (o instanceof DataItem) {
             DataItem x = (DataItem) o;
-            if (x.getLabel().equals(this.label)){
-                return true;
-            }
-            else {
-                return false;
-            }
+            return x.getLabel().equals(this.label);
         }
         else {
             return false;
