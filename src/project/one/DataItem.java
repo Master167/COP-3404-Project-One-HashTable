@@ -1,5 +1,8 @@
 package project.one;
-
+/**
+ * An Individual DataItem
+ * @author Michael Frederick (n00725913)
+ */
 public class DataItem {
     private String label;
     private int value;

@@ -14,8 +14,11 @@ public class HashTable {
      */
     public static void main(String[] args) {
         try {
-            if (args[0] != null) {
+            if (args.length > 0 && args[0] != null) {
                 HashArray hasher = new HashArray(args[0]);
+            }
+            else {
+                System.out.printf("No Input File Given%n");
             }
         }
         catch (Exception e) {

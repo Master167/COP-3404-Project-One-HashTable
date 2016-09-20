@@ -7,6 +7,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
+/**
+ * Builds and contains a DataItem table based on the input file given
+ * @author Michael Frederick (n00725913)
+ */
 public class HashArray { 
     
     private DataItem[] data;
