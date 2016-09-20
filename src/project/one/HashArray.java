@@ -25,10 +25,14 @@ public class HashArray {
         }
         catch (Exception e) {
             System.out.printf(e.toString());
-            e.printStackTrace();
         }
     }
     
+    /**
+     * Creates the DataItem array based on the input file contents
+     * @param file
+     * @return 
+     */
     private DataItem[] createArray(File file) {
         this.data = new DataItem[this.size];
 
@@ -54,6 +58,12 @@ public class HashArray {
         return data;
     }
     
+    /**
+     * Hashes the string by each character value and Horner's Polynomial
+     * @param str
+     * @param maxSize
+     * @return int
+     */
     private int hashFunction(String str, int maxSize) {
         int value;
         char[] charArray = str.toCharArray();
@@ -66,10 +76,20 @@ public class HashArray {
         return value;
     }
     
+    /**
+     * How I resolve a data collision
+     * @param index
+     * @param collisions
+     * @return Next Index to be checked
+     */
     private int collisionResolver(int index, int collisions) {
         return ((index * index) + collisions) % this.size;
     }
     
+    /**
+     * Inserts the DataItem into the array, if item with the same label does not exist
+     * @param item 
+     */
     private void insertData(DataItem item) {
         int insertionIndex = this.hashFunction(item.getLabel(), this.size);
         int collisions = 0;
@@ -93,7 +113,11 @@ public class HashArray {
         }
         
     }
-    
+
+    /**
+     * Searches the Data array for the DataItem with the same string
+     * @param key 
+     */
     private void searchForData(String key) {
         int insertionIndex = this.hashFunction(key, this.size);
         int jumps = 0;
@@ -115,6 +139,10 @@ public class HashArray {
         }
     }
     
+    /**
+     * Outputs the message to the Output file
+     * @param message 
+     */
     private void writeToFile(String message) {
         try (
                 FileWriter fileWriter = new FileWriter(this.outputFilename, true);
@@ -122,11 +150,10 @@ public class HashArray {
                 PrintWriter outputWriter = new PrintWriter(bufferedWriter);
             ) {
             outputWriter.printf(message);
-            System.out.printf(message);
+            //System.out.printf(message);
         }
         catch (IOException ex) {
             System.out.printf("%s%n", ex.getMessage());
-            ex.getStackTrace();
         }
     }
 }//end Class HashTable

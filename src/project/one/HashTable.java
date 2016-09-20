@@ -1,11 +1,4 @@
 package project.one;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Scanner;
 
 /**
  * COP 3404 Project One - Create a Symbol table that reads a file and fills the 
@@ -27,7 +20,6 @@ public class HashTable {
         }
         catch (Exception e) {
             System.out.printf(e.toString());
-            e.printStackTrace();
         }
     }
     

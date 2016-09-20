@@ -17,6 +17,11 @@ public class DataItem {
         return this.label;
     }
     
+    /**
+     * Returns True if o is a DataItem with the same label
+     * @param o Object
+     * @return boolean
+     */
     @Override
     public boolean equals(Object o) {
         if (o instanceof DataItem) {
