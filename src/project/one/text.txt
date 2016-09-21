@@ -1,0 +1,35 @@
+Project One COP 3404
+Author: Michael Frederick (n00725913)
+
+Purpose: Create and implement a symbol table  that will be used by the assembler
+during pass 1 and pass 2. It is constructed as an Hash table. The HashTable.java
+file with an argument of an input file will start the routine to generate the
+table with the output of where data was inserted and searched for contained
+inside an output.txt file that will be written as the program executes.
+
+Input file format:
+The Input file should contain two types of data on each line. One of the Format,
+[String] [Value], with which the Key value pair will be inserted into the Hash
+table. The other format, [String], will be used as a key to search for the key
+value pair. Each data item needs to be contained on it's own line.
+
+To execute:
+1. Compile the code using "javac *.java" or using the GNU command "make"
+2. Use the command "java HashTable [input filename]"
+    -After execution "output.txt" will be generated with the results of the
+     execution.
+
+Source Files:
+HashTable.java
+HashArray.java
+DataItem.java
+makefile
+(input.txt)
+
+Makefile will Generate:
+HashTable.class
+HashArray.class
+DataItem.class
+
+Output Files:
+output.txt
